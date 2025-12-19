@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+    <!-- MCM Menu Name (sidebar) -->
+    <string id="ui_mcm_menu_loot_searching">
+        <text>Looting Takes Time</text>
+    </string>
+    
+    <!-- Title -->
+    <string id="ui_mcm_loot_searching_title">
+        <text>Looting Takes Time - Improved</text>
+    </string>
+    
+    <!-- Targets Section -->
+    <string id="ui_mcm_loot_searching_targets_header">
+        <text>Targets</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_corpses">
+        <text>Enable for Corpses</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_corpses_desc">
+        <text>Apply looting delay when searching dead NPCs.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_containers">
+        <text>Enable for Containers</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_containers_desc">
+        <text>Apply looting delay when searching stashes and containers.</text>
+    </string>
+    
+    <!-- Reveal Mode Section -->
+    <string id="ui_mcm_loot_searching_reveal_header">
+        <text>Item Reveal Settings</text>
+    </string>
+    <string id="ui_mcm_loot_searching_reveal_mode">
+        <text>Reveal Order</text>
+    </string>
+    <string id="ui_mcm_loot_searching_reveal_mode_desc">
+        <text>Order in which items are revealed when searching.</text>
+    </string>
+    <string id="st_looting_reveal_pos">
+        <text>Positional (Left to Right)</text>
+    </string>
+    <string id="st_looting_reveal_size">
+        <text>Size-based (Larger First)</text>
+    </string>
+    <!-- MCM compound IDs for reveal_mode dropdown -->
+    <string id="loot_searching_reveal_mode_lst_st_looting_reveal_pos">
+        <text>Positional (Left to Right)</text>
+    </string>
+    <string id="loot_searching_reveal_mode_lst_st_looting_reveal_size">
+        <text>Size-based (Larger First)</text>
+    </string>
+    
+    <string id="ui_mcm_loot_searching_placeholder_mode">
+        <text>Placeholder Mode</text>
+    </string>
+    <string id="ui_mcm_loot_searching_placeholder_mode_desc">
+        <text>How hidden items appear before being revealed.</text>
+    </string>
+    <string id="st_looting_ph_none">
+        <text>None (items appear when found)</text>
+    </string>
+    <string id="st_looting_ph_silhouette">
+        <text>Dark Silhouettes</text>
+    </string>
+    <string id="st_looting_ph_loading">
+        <text>Loading Icons</text>
+    </string>
+    <!-- MCM compound IDs for placeholder_mode dropdown -->
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_none">
+        <text>None (items appear when found)</text>
+    </string>
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_silhouette">
+        <text>Dark Silhouettes</text>
+    </string>
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_loading">
+        <text>Loading Icons</text>
+    </string>
+    
+    <!-- Silhouette Settings Section -->
+    <string id="ui_mcm_loot_searching_silhouette_header">
+        <text>Silhouette / Loading Icon Settings</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_intensity">
+        <text>Silhouette Darkness (%)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_intensity_desc">
+        <text>How dark the silhouette appears (higher = darker).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_r">
+        <text>Silhouette Color Red</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_r_desc">
+        <text>Red component of silhouette base color (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_g">
+        <text>Silhouette Color Green</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_g_desc">
+        <text>Green component of silhouette base color (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_b">
+        <text>Silhouette Color Blue</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_b_desc">
+        <text>Blue component of silhouette base color (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_scale_mode">
+        <text>Loading Icon Size Mode</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_scale_mode_desc">
+        <text>How the loading icon is sized.</text>
+    </string>
+    <string id="st_looting_spinner_fixed">
+        <text>Fixed Size</text>
+    </string>
+    <string id="st_looting_spinner_scaled">
+        <text>Scale with Item</text>
+    </string>
+    <!-- MCM compound IDs for spinner_scale_mode dropdown -->
+    <string id="loot_searching_spinner_scale_mode_lst_st_looting_spinner_fixed">
+        <text>Fixed Size</text>
+    </string>
+    <string id="loot_searching_spinner_scale_mode_lst_st_looting_spinner_scaled">
+        <text>Scale with Item</text>
+    </string>
+    
+    <string id="ui_mcm_loot_searching_spinner_size">
+        <text>Loading Icon Size (px)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_size_desc">
+        <text>Size of loading icon (fixed mode) or max size (scaled mode).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_style">
+        <text>Loading Icon Style</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_style_desc">
+        <text>Visual style of the loading icon animation.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_opacity">
+        <text>Loading Icon Opacity</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_opacity_desc">
+        <text>Transparency of the loading icon (10-100%).</text>
+    </string>
+    <string id="st_looting_spinner_style_default">
+        <text>Default</text>
+    </string>
+    <string id="st_looting_spinner_style_arrows">
+        <text>Arrows</text>
+    </string>
+    <string id="st_looting_spinner_style_chasing_arrows">
+        <text>Chasing Arrows</text>
+    </string>
+    <string id="st_looting_spinner_style_fading_line">
+        <text>Fading Line</text>
+    </string>
+    <string id="st_looting_spinner_style_growing_ring">
+        <text>Growing Ring</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle">
+        <text>Half Circle</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_colored">
+        <text>Half Circle (Colored)</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_dimmed">
+        <text>Half Circle (Dimmed)</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_green">
+        <text>Half Circle (Green)</text>
+    </string>
+    <string id="st_looting_spinner_style_line">
+        <text>Line</text>
+    </string>
+    <string id="st_looting_spinner_style_recycle">
+        <text>Recycle</text>
+    </string>
+    <string id="st_looting_spinner_style_search">
+        <text>Search</text>
+    </string>
+    <string id="st_looting_spinner_style_search_orange">
+        <text>Search (Orange)</text>
+    </string>
+    <string id="st_looting_spinner_style_spinning_segments">
+        <text>Spinning Segments</text>
+    </string>
+    <string id="st_looting_spinner_style_two_arrows">
+        <text>Two Arrows</text>
+    </string>
+    <string id="st_looting_spinner_style_wheel">
+        <text>Wheel</text>
+    </string>
+    <!-- MCM compound IDs for spinner_style dropdown -->
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_default">
+        <text>Default</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_arrows">
+        <text>Arrows</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_chasing_arrows">
+        <text>Chasing Arrows</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_fading_line">
+        <text>Fading Line</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_growing_ring">
+        <text>Growing Ring</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle">
+        <text>Half Circle</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_colored">
+        <text>Half Circle (Colored)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_dimmed">
+        <text>Half Circle (Dimmed)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_green">
+        <text>Half Circle (Green)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_line">
+        <text>Line</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_recycle">
+        <text>Recycle</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_search">
+        <text>Search</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_search_orange">
+        <text>Search (Orange)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_spinning_segments">
+        <text>Spinning Segments</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_two_arrows">
+        <text>Two Arrows</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_wheel">
+        <text>Wheel</text>
+    </string>
+    
+    <!-- Timing Section -->
+    <string id="ui_mcm_loot_searching_header_time">
+        <text>Search Timing</text>
+    </string>
+    <string id="ui_mcm_loot_searching_first_item_delay">
+        <text>First Item Delay (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_first_item_delay_desc">
+        <text>Time to wait before anything appears.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_min">
+        <text>Silhouette Appear Time Min (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_min_desc">
+        <text>Minimum random time for each silhouette to appear.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_max">
+        <text>Silhouette Appear Time Max (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_max_desc">
+        <text>Maximum random time for each silhouette to appear.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_min">
+        <text>Delay Between Items Min (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_min_desc">
+        <text>Minimum time from silhouette appearance to full reveal.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_max">
+        <text>Delay Between Items Max (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_max_desc">
+        <text>Maximum time from silhouette appearance to full reveal.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_time_max">
+        <text>Maximum Search Time (sec)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_time_max_desc">
+        <text>Maximum total time to reveal all items.</text>
+    </string>
+    
+    <!-- Rank Section -->
+    <string id="ui_mcm_loot_searching_header_rank">
+        <text>NPC Rank Multipliers</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_enable">
+        <text>Enable Rank System</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_enable_desc">
+        <text>Higher rank NPCs take longer to search.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_novice">
+        <text>Novice Multiplier</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_novice_desc">
+        <text>Time multiplier for Novice rank.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_experienced">
+        <text>Experienced Multiplier</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_experienced_desc">
+        <text>Time multiplier for Experienced rank.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_veteran">
+        <text>Veteran Multiplier</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_veteran_desc">
+        <text>Time multiplier for Veteran rank.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_master">
+        <text>Master Multiplier</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_master_desc">
+        <text>Time multiplier for Master rank.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_legend">
+        <text>Legend Multiplier</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_legend_desc">
+        <text>Time multiplier for Legend rank.</text>
+    </string>
+    
+    <!-- HUD Section -->
+    <string id="ui_mcm_loot_searching_header_hud">
+        <text>HUD Indicator</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_enable">
+        <text>Enable HUD Indicator</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_enable_desc">
+        <text>Show indicator while searching.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_icon">
+        <text>Indicator Type</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_icon_desc">
+        <text>Text or animated icon.</text>
+    </string>
+    <string id="st_looting_hud_text">
+        <text>Text</text>
+    </string>
+    <string id="st_looting_hud_anim">
+        <text>Animated Icon</text>
+    </string>
+    <!-- MCM compound IDs for hud_icon dropdown -->
+    <string id="loot_searching_hud_icon_lst_st_looting_hud_text">
+        <text>Text</text>
+    </string>
+    <string id="loot_searching_hud_icon_lst_st_looting_hud_anim">
+        <text>Animated Icon</text>
+    </string>
+    
+    <!-- HUD Indicator Style -->
+    <string id="ui_mcm_loot_searching_hud_indicator_style">
+        <text>Indicator Animation Style</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_style_desc">
+        <text>Style of the animated loading indicator (requires Animated Icon mode).</text>
+    </string>
+    <string id="st_looting_indicator_default">
+        <text>Default</text>
+    </string>
+    <string id="st_looting_indicator_arrows_bar">
+        <text>Arrows Bar</text>
+    </string>
+    <string id="st_looting_indicator_blue">
+        <text>Blue</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines">
+        <text>Fading Lines</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines_dimmed">
+        <text>Fading Lines (Dimmed)</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines_green">
+        <text>Fading Lines (Green)</text>
+    </string>
+    <string id="st_looting_indicator_moving_train">
+        <text>Moving Train</text>
+    </string>
+    <string id="st_looting_indicator_stampede">
+        <text>Stampede</text>
+    </string>
+    <!-- MCM compound IDs for hud_indicator_style dropdown -->
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_default">
+        <text>Default</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_arrows_bar">
+        <text>Arrows Bar</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_blue">
+        <text>Blue</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines">
+        <text>Fading Lines</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines_dimmed">
+        <text>Fading Lines (Dimmed)</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines_green">
+        <text>Fading Lines (Green)</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_moving_train">
+        <text>Moving Train</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_stampede">
+        <text>Stampede</text>
+    </string>
+    
+    <!-- HUD Indicator Position -->
+    <string id="ui_mcm_loot_searching_hud_indicator_x">
+        <text>Indicator X Position</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_x_desc">
+        <text>Horizontal position of the animated indicator.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_y">
+        <text>Indicator Y Position</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_y_desc">
+        <text>Vertical position of the animated indicator.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_scale">
+        <text>Indicator Scale (%)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_scale_desc">
+        <text>Scale of the animated indicator (25-200%).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_x">
+        <text>Text X Position</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_x_desc">
+        <text>Horizontal position of the text indicator.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_y">
+        <text>Text Y Position</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_y_desc">
+        <text>Vertical position of the text indicator.</text>
+    </string>
+    
+    <!-- Sound Section -->
+    <string id="ui_mcm_loot_searching_header_sound">
+        <text>Sound Effects</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable">
+        <text>Item Found Sound</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_desc">
+        <text>Play sound when item is found.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_vol">
+        <text>Item Sound Volume</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_vol_desc">
+        <text>Volume for item found sounds.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable">
+        <text>Background Search Sound</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_desc">
+        <text>Play ambient searching sounds.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_vol">
+        <text>Background Sound Volume</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_vol_desc">
+        <text>Volume for background sounds.</text>
+    </string>
+    
+    <!-- Debug Section -->
+    <string id="ui_mcm_loot_searching_header_debug">
+        <text>Debug</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debugx">
+        <text>Enable Debug Logging</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debugx_desc">
+        <text>Print debug messages to console.</text>
+    </string>
+    
+    <!-- HUD Text -->
+    <string id="st_xcvb_looting">
+        <text>Searching</text>
+    </string>
+    <string id="st_xcvb_looting_bandit">
+        <text>Frisking</text>
+    </string>
+</string_table>

@@ -1,0 +1,16 @@
+<w>
+    <!-- HUD indicator: animated bar - texture is set dynamically based on hud_indicator_style -->
+    <loot_indicator_anim x="155" y="75" width="140" height="21" stretch="1">
+        <texture>ui\loot_indicator\default\indicator_01</texture>
+    </loot_indicator_anim>
+
+    <!-- HUD indicator: text -->
+    <looting_text x="155" y="79" width="200" height="80" stretch="1">
+        <text x="0" y="0" align="l" complex_mode="0" font="graffiti22" r="255" g="255" b="255" a="255"></text>
+    </looting_text>
+
+    <!-- Cell loading spinner - texture is set dynamically in code based on spinner_style -->
+    <cell_spinner x="0" y="0" width="24" height="24" stretch="1">
+        <texture>ui\loot_searching\default\icon_looting_01b</texture>
+    </cell_spinner>
+</w>

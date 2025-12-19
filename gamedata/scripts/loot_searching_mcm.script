@@ -1,0 +1,489 @@
+--[[
+    Looting Takes Time - MCM Configuration
+    Original by: xcvb
+    Improvements by: Abraham
+--]]
+
+-- If you don't use MCM, change your defaults from here.
+local defaults = {
+    -- Targets
+    ["enable_corpses"] = true,
+    ["enable_containers"] = false,
+    
+    -- Timing
+    ["first_item_delay"] = 1,
+    ["silhouette_appear_min"] = 0.2,
+    ["silhouette_appear_max"] = 1.5,
+    ["delay_between_min"] = 0.1,
+    ["delay_between_max"] = 1.0,
+    ["time_max"] = 20,
+    
+    -- Reveal mode
+    ["reveal_mode"] = 2,  -- 1=positional, 2=by size
+    ["placeholder_mode"] = 2,  -- 0=none, 1=silhouettes, 2=icons
+    
+    -- Silhouette settings
+    ["silhouette_intensity"] = 100,
+    ["silhouette_color_r"] = 5,
+    ["silhouette_color_g"] = 5,
+    ["silhouette_color_b"] = 5,
+    ["spinner_size"] = 20,
+    ["spinner_scale_mode"] = 1,  -- 1=fixed, 2=scale with item
+    ["spinner_style"] = "half_circle_colored",  -- icon style folder
+    ["spinner_opacity"] = 30,  -- icon opacity (10-100%)
+    
+    -- HUD
+    ["hud_enable"] = true,
+    ["hud_icon"] = 1,
+    ["hud_indicator_style"] = "default",
+    ["hud_indicator_x"] = 165,
+    ["hud_indicator_y"] = 80,
+    ["hud_indicator_scale"] = 70,
+    ["hud_text_x"] = 210,
+    ["hud_text_y"] = 82,
+    
+    -- Sound
+    ["sound_enable"] = true,
+    ["sound_enable_vol"] = 0.8,
+    ["sound_bg_enable"] = true,
+    ["sound_bg_enable_vol"] = 1.2,
+    
+    -- Rank
+    ["rank_enable"] = true,
+    ["rank_novice"] = 0.5,
+    ["rank_experienced"] = 0.8,
+    ["rank_veteran"] = 1.2,
+    ["rank_master"] = 1.3,
+    ["rank_legend"] = 1.7,
+    
+    -- Debug
+    ["debugx"] = false,
+}
+
+function get_config(key)
+    if ui_mcm then
+        return ui_mcm.get("loot_searching/" .. key)
+    end
+    return defaults[key]
+end
+
+function on_mcm_load()
+    return {
+        id = "loot_searching",
+        sh = true,
+        gr = {
+            -- Title
+            {
+                id = "title",
+                type = "slide",
+                link = "ui_options_slider_player",
+                text = "ui_mcm_loot_searching_title",
+                size = { 512, 50 },
+                spacing = 20,
+            },
+            
+            -- TARGETS SECTION
+            {
+                id = "targets_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_targets_header",
+            },
+            {
+                id = "enable_corpses",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "enable_containers",
+                type = "check",
+                val = 1,
+                def = false,
+            },
+            
+            -- REVEAL MODE SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "reveal_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_reveal_header",
+            },
+            {
+                id = "reveal_mode",
+                type = "list",
+                val = 2,
+                def = 2,
+                content = {
+                    { 1, "st_looting_reveal_pos" },
+                    { 2, "st_looting_reveal_size" },
+                },
+            },
+            {
+                id = "placeholder_mode",
+                type = "list",
+                val = 2,
+                def = 2,
+                content = {
+                    { 0, "st_looting_ph_none" },
+                    { 1, "st_looting_ph_silhouette" },
+                    { 2, "st_looting_ph_loading" },
+                },
+            },
+            
+            -- SILHOUETTE SETTINGS
+            { id = "divider", type = "line" },
+            {
+                id = "silhouette_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_silhouette_header",
+            },
+            {
+                id = "silhouette_intensity",
+                type = "track",
+                val = 2,
+                min = 50,
+                max = 100,
+                step = 1,
+                def = 100,
+            },
+            {
+                id = "silhouette_color_r",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 255,
+                step = 1,
+                def = 5,
+            },
+            {
+                id = "silhouette_color_g",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 255,
+                step = 1,
+                def = 5,
+            },
+            {
+                id = "silhouette_color_b",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 255,
+                step = 1,
+                def = 5,
+            },
+            {
+                id = "spinner_scale_mode",
+                type = "list",
+                val = 2,
+                def = 1,
+                content = {
+                    { 1, "st_looting_spinner_fixed" },
+                    { 2, "st_looting_spinner_scaled" },
+                },
+            },
+            {
+                id = "spinner_size",
+                type = "track",
+                val = 2,
+                min = 16,
+                max = 64,
+                step = 4,
+                def = 20,
+            },
+            {
+                id = "spinner_style",
+                type = "list",
+                val = 0,
+                def = "half_circle_colored",
+                content = {
+                    { "default", "st_looting_spinner_style_default" },
+                    { "arrows", "st_looting_spinner_style_arrows" },
+                    { "chasing_arrows", "st_looting_spinner_style_chasing_arrows" },
+                    { "fading_line", "st_looting_spinner_style_fading_line" },
+                    { "growing_ring", "st_looting_spinner_style_growing_ring" },
+                    { "half_circle", "st_looting_spinner_style_half_circle" },
+                    { "half_circle_colored", "st_looting_spinner_style_half_circle_colored" },
+                    { "half_circle_dimmed", "st_looting_spinner_style_half_circle_dimmed" },
+                    { "half_circle_green", "st_looting_spinner_style_half_circle_green" },
+                    { "line", "st_looting_spinner_style_line" },
+                    { "recycle", "st_looting_spinner_style_recycle" },
+                    { "search", "st_looting_spinner_style_search" },
+                    { "search_orange", "st_looting_spinner_style_search_orange" },
+                    { "spinning_segments", "st_looting_spinner_style_spinning_segments" },
+                    { "two_arrows", "st_looting_spinner_style_two_arrows" },
+                    { "wheel", "st_looting_spinner_style_wheel" },
+                },
+            },
+            {
+                id = "spinner_opacity",
+                type = "track",
+                val = 2,
+                min = 10,
+                max = 100,
+                step = 5,
+                def = 30,
+            },
+            
+            -- TIMING SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "time_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_header_time",
+            },
+            {
+                id = "first_item_delay",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 10,
+                step = 0.1,
+                def = 1,
+            },
+            {
+                id = "silhouette_appear_min",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 5,
+                step = 0.1,
+                def = 0.2,
+            },
+            {
+                id = "silhouette_appear_max",
+                type = "track",
+                val = 2,
+                min = 0.5,
+                max = 10,
+                step = 0.1,
+                def = 1.5,
+            },
+            {
+                id = "delay_between_min",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 5,
+                step = 0.1,
+                def = 0.1,
+            },
+            {
+                id = "delay_between_max",
+                type = "track",
+                val = 2,
+                min = 0.5,
+                max = 10,
+                step = 0.1,
+                def = 1.0,
+            },
+            {
+                id = "time_max",
+                type = "track",
+                val = 2,
+                min = 5,
+                max = 60,
+                step = 1,
+                def = 20,
+            },
+            
+            -- RANK SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "rank_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_header_rank",
+            },
+            {
+                id = "rank_enable",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "rank_novice",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 3.0,
+                step = 0.05,
+                def = 0.5,
+            },
+            {
+                id = "rank_experienced",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 3.0,
+                step = 0.05,
+                def = 0.8,
+            },
+            {
+                id = "rank_veteran",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 3.0,
+                step = 0.05,
+                def = 1.2,
+            },
+            {
+                id = "rank_master",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 3.0,
+                step = 0.05,
+                def = 1.3,
+            },
+            {
+                id = "rank_legend",
+                type = "track",
+                val = 2,
+                min = 0.1,
+                max = 3.0,
+                step = 0.05,
+                def = 1.7,
+            },
+            
+            -- HUD SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "hud_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_header_hud",
+            },
+            {
+                id = "hud_enable",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "hud_icon",
+                type = "list",
+                val = 2,
+                def = 1,
+                content = {
+                    { 1, "st_looting_hud_text" },
+                    { 2, "st_looting_hud_anim" },
+                },
+            },
+            {
+                id = "hud_text_x",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 500,
+                step = 1,
+                def = 210,
+            },
+            {
+                id = "hud_text_y",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 300,
+                step = 1,
+                def = 82,
+            },
+            {
+                id = "hud_indicator_style",
+                type = "list",
+                val = 0,
+                def = "default",
+                content = {
+                    { "default", "st_looting_indicator_default" },
+                    { "arrows_bar", "st_looting_indicator_arrows_bar" },
+                    { "blue", "st_looting_indicator_blue" },
+                    { "fading_lines", "st_looting_indicator_fading_lines" },
+                    { "fading_lines_dimmed", "st_looting_indicator_fading_lines_dimmed" },
+                    { "fading_lines_green", "st_looting_indicator_fading_lines_green" },
+                    { "moving_train", "st_looting_indicator_moving_train" },
+                    { "stampede", "st_looting_indicator_stampede" },
+                },
+            },
+            {
+                id = "hud_indicator_x",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 500,
+                step = 1,
+                def = 165,
+            },
+            {
+                id = "hud_indicator_y",
+                type = "track",
+                val = 2,
+                min = 0,
+                max = 300,
+                step = 1,
+                def = 80,
+            },
+            {
+                id = "hud_indicator_scale",
+                type = "track",
+                val = 2,
+                min = 25,
+                max = 200,
+                step = 5,
+                def = 70,
+            },
+            
+            -- SOUND SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "sound_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_header_sound",
+            },
+            {
+                id = "sound_enable",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "sound_enable_vol",
+                type = "track",
+                val = 2,
+                min = 0.5,
+                max = 2,
+                step = 0.05,
+                def = 0.8,
+            },
+            {
+                id = "sound_bg_enable",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "sound_bg_enable_vol",
+                type = "track",
+                val = 2,
+                min = 0.5,
+                max = 2,
+                step = 0.05,
+                def = 1.2,
+            },
+            
+            -- DEBUG SECTION
+            { id = "divider", type = "line" },
+            { id = "divider", type = "line" },
+            {
+                id = "debug_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_header_debug",
+            },
+            {
+                id = "debugx",
+                type = "check",
+                val = 1,
+                def = false,
+            },
+        }
+    }
+end

@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+    <!-- MCM Menu Name (sidebar) -->
+    <string id="ui_mcm_menu_loot_searching">
+        <text>Looting Takes Time</text>
+    </string>
+    
+    <!-- Title -->
+    <string id="ui_mcm_loot_searching_title">
+        <text>Looting Takes Time - Improved</text>
+    </string>
+    
+    <!-- Targets Section -->
+    <string id="ui_mcm_loot_searching_targets_header">
+        <text>Цели</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_corpses">
+        <text>Включить для трупов</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_corpses_desc">
+        <text>Применять задержку при обыске мёртвых NPC.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_containers">
+        <text>Включить для контейнеров</text>
+    </string>
+    <string id="ui_mcm_loot_searching_enable_containers_desc">
+        <text>Применять задержку при обыске тайников и контейнеров.</text>
+    </string>
+    
+    <!-- Reveal Mode Section -->
+    <string id="ui_mcm_loot_searching_reveal_header">
+        <text>Настройки отображения</text>
+    </string>
+    <string id="ui_mcm_loot_searching_reveal_mode">
+        <text>Порядок появления</text>
+    </string>
+    <string id="ui_mcm_loot_searching_reveal_mode_desc">
+        <text>Порядок появления предметов при обыске.</text>
+    </string>
+    <string id="st_looting_reveal_pos">
+        <text>Позиционный (слева направо)</text>
+    </string>
+    <string id="st_looting_reveal_size">
+        <text>По размеру (крупные первыми)</text>
+    </string>
+    <!-- MCM compound IDs for reveal_mode dropdown -->
+    <string id="loot_searching_reveal_mode_lst_st_looting_reveal_pos">
+        <text>Позиционный (слева направо)</text>
+    </string>
+    <string id="loot_searching_reveal_mode_lst_st_looting_reveal_size">
+        <text>По размеру (крупные первыми)</text>
+    </string>
+    
+    <string id="ui_mcm_loot_searching_placeholder_mode">
+        <text>Режим заполнителя</text>
+    </string>
+    <string id="ui_mcm_loot_searching_placeholder_mode_desc">
+        <text>Как отображаются скрытые предметы.</text>
+    </string>
+    <string id="st_looting_ph_none">
+        <text>Нет (предметы появляются при обнаружении)</text>
+    </string>
+    <string id="st_looting_ph_silhouette">
+        <text>Тёмные силуэты</text>
+    </string>
+    <string id="st_looting_ph_loading">
+        <text>Иконки загрузки</text>
+    </string>
+    <!-- MCM compound IDs for placeholder_mode dropdown -->
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_none">
+        <text>Нет (предметы появляются при обнаружении)</text>
+    </string>
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_silhouette">
+        <text>Тёмные силуэты</text>
+    </string>
+    <string id="loot_searching_placeholder_mode_lst_st_looting_ph_loading">
+        <text>Иконки загрузки</text>
+    </string>
+    
+    <!-- Silhouette Settings Section -->
+    <string id="ui_mcm_loot_searching_silhouette_header">
+        <text>Настройки силуэтов / иконок загрузки</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_intensity">
+        <text>Затемнение силуэта (%)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_intensity_desc">
+        <text>Насколько тёмным будет силуэт (больше = темнее).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_r">
+        <text>Цвет силуэта: красный</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_r_desc">
+        <text>Красный компонент базового цвета силуэта (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_g">
+        <text>Цвет силуэта: зелёный</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_g_desc">
+        <text>Зелёный компонент базового цвета силуэта (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_b">
+        <text>Цвет силуэта: синий</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_color_b_desc">
+        <text>Синий компонент базового цвета силуэта (0-255).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_scale_mode">
+        <text>Режим размера иконки</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_scale_mode_desc">
+        <text>Как определяется размер иконки загрузки.</text>
+    </string>
+    <string id="st_looting_spinner_fixed">
+        <text>Фиксированный размер</text>
+    </string>
+    <string id="st_looting_spinner_scaled">
+        <text>Масштаб по предмету</text>
+    </string>
+    <!-- MCM compound IDs for spinner_scale_mode dropdown -->
+    <string id="loot_searching_spinner_scale_mode_lst_st_looting_spinner_fixed">
+        <text>Фиксированный размер</text>
+    </string>
+    <string id="loot_searching_spinner_scale_mode_lst_st_looting_spinner_scaled">
+        <text>Масштаб по предмету</text>
+    </string>
+    
+    <string id="ui_mcm_loot_searching_spinner_size">
+        <text>Размер иконки загрузки (пкс)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_size_desc">
+        <text>Размер иконки (фикс. режим) или макс. размер (масштаб. режим).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_style">
+        <text>Стиль иконки загрузки</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_style_desc">
+        <text>Визуальный стиль анимации иконки загрузки.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_opacity">
+        <text>Прозрачность иконки загрузки</text>
+    </string>
+    <string id="ui_mcm_loot_searching_spinner_opacity_desc">
+        <text>Прозрачность иконки загрузки (10-100%).</text>
+    </string>
+    <string id="st_looting_spinner_style_default">
+        <text>По умолчанию</text>
+    </string>
+    <string id="st_looting_spinner_style_arrows">
+        <text>Стрелки</text>
+    </string>
+    <string id="st_looting_spinner_style_chasing_arrows">
+        <text>Преследующие стрелки</text>
+    </string>
+    <string id="st_looting_spinner_style_fading_line">
+        <text>Затухающая линия</text>
+    </string>
+    <string id="st_looting_spinner_style_growing_ring">
+        <text>Растущее кольцо</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle">
+        <text>Полукруг</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_colored">
+        <text>Полукруг (цветной)</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_dimmed">
+        <text>Полукруг (тусклый)</text>
+    </string>
+    <string id="st_looting_spinner_style_half_circle_green">
+        <text>Полукруг (зелёный)</text>
+    </string>
+    <string id="st_looting_spinner_style_line">
+        <text>Линия</text>
+    </string>
+    <string id="st_looting_spinner_style_recycle">
+        <text>Переработка</text>
+    </string>
+    <string id="st_looting_spinner_style_search">
+        <text>Поиск</text>
+    </string>
+    <string id="st_looting_spinner_style_search_orange">
+        <text>Поиск (оранжевый)</text>
+    </string>
+    <string id="st_looting_spinner_style_spinning_segments">
+        <text>Вращающиеся сегменты</text>
+    </string>
+    <string id="st_looting_spinner_style_two_arrows">
+        <text>Две стрелки</text>
+    </string>
+    <string id="st_looting_spinner_style_wheel">
+        <text>Колесо</text>
+    </string>
+    <!-- MCM compound IDs for spinner_style dropdown -->
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_default">
+        <text>По умолчанию</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_arrows">
+        <text>Стрелки</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_chasing_arrows">
+        <text>Преследующие стрелки</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_fading_line">
+        <text>Затухающая линия</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_growing_ring">
+        <text>Растущее кольцо</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle">
+        <text>Полукруг</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_colored">
+        <text>Полукруг (цветной)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_dimmed">
+        <text>Полукруг (тусклый)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_half_circle_green">
+        <text>Полукруг (зелёный)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_line">
+        <text>Линия</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_recycle">
+        <text>Переработка</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_search">
+        <text>Поиск</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_search_orange">
+        <text>Поиск (оранжевый)</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_spinning_segments">
+        <text>Вращающиеся сегменты</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_two_arrows">
+        <text>Две стрелки</text>
+    </string>
+    <string id="loot_searching_spinner_style_lst_st_looting_spinner_style_wheel">
+        <text>Колесо</text>
+    </string>
+    
+    <!-- Timing Section -->
+    <string id="ui_mcm_loot_searching_header_time">
+        <text>Время поиска</text>
+    </string>
+    <string id="ui_mcm_loot_searching_first_item_delay">
+        <text>Начальная задержка (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_first_item_delay_desc">
+        <text>Задержка перед появлением первого предмета.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_min">
+        <text>Мин. время появления силуэта (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_min_desc">
+        <text>Минимальное время между появлениями силуэтов.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_max">
+        <text>Макс. время появления силуэта (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_silhouette_appear_max_desc">
+        <text>Максимальное время между появлениями силуэтов.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_min">
+        <text>Мин. задержка между предметами (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_min_desc">
+        <text>Минимальное время от появления силуэта до полного раскрытия.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_max">
+        <text>Макс. задержка между предметами (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_delay_between_max_desc">
+        <text>Максимальное время от появления силуэта до полного раскрытия.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_time_max">
+        <text>Максимальное время поиска (сек)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_time_max_desc">
+        <text>Максимальное общее время для отображения всех предметов.</text>
+    </string>
+    
+    <!-- Rank Section -->
+    <string id="ui_mcm_loot_searching_header_rank">
+        <text>Множители рангов NPC</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_enable">
+        <text>Включить систему рангов</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_enable_desc">
+        <text>NPC высшего ранга обыскиваются дольше.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_novice">
+        <text>Множитель новичка</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_novice_desc">
+        <text>Множитель времени для новичков.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_experienced">
+        <text>Множитель опытного</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_experienced_desc">
+        <text>Множитель времени для опытных.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_veteran">
+        <text>Множитель ветерана</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_veteran_desc">
+        <text>Множитель времени для ветеранов.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_master">
+        <text>Множитель мастера</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_master_desc">
+        <text>Множитель времени для мастеров.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_legend">
+        <text>Множитель легенды</text>
+    </string>
+    <string id="ui_mcm_loot_searching_rank_legend_desc">
+        <text>Множитель времени для легенд.</text>
+    </string>
+    
+    <!-- HUD Section -->
+    <string id="ui_mcm_loot_searching_header_hud">
+        <text>Индикатор HUD</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_enable">
+        <text>Включить индикатор</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_enable_desc">
+        <text>Показывать индикатор при обыске.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_icon">
+        <text>Тип индикатора</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_icon_desc">
+        <text>Текст или анимированная иконка.</text>
+    </string>
+    <string id="st_looting_hud_text">
+        <text>Текст</text>
+    </string>
+    <string id="st_looting_hud_anim">
+        <text>Анимированная иконка</text>
+    </string>
+    <!-- MCM compound IDs for hud_icon dropdown -->
+    <string id="loot_searching_hud_icon_lst_st_looting_hud_text">
+        <text>Текст</text>
+    </string>
+    <string id="loot_searching_hud_icon_lst_st_looting_hud_anim">
+        <text>Анимированная иконка</text>
+    </string>
+    
+    <!-- HUD Indicator Style -->
+    <string id="ui_mcm_loot_searching_hud_indicator_style">
+        <text>Стиль анимации индикатора</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_style_desc">
+        <text>Стиль анимированного индикатора загрузки (требует режим Анимированная иконка).</text>
+    </string>
+    <string id="st_looting_indicator_default">
+        <text>По умолчанию</text>
+    </string>
+    <string id="st_looting_indicator_arrows_bar">
+        <text>Полоса со стрелками</text>
+    </string>
+    <string id="st_looting_indicator_blue">
+        <text>Синий</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines">
+        <text>Затухающие линии</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines_dimmed">
+        <text>Затухающие линии (тусклые)</text>
+    </string>
+    <string id="st_looting_indicator_fading_lines_green">
+        <text>Затухающие линии (зелёные)</text>
+    </string>
+    <string id="st_looting_indicator_moving_train">
+        <text>Движущийся поезд</text>
+    </string>
+    <string id="st_looting_indicator_stampede">
+        <text>Топот</text>
+    </string>
+    <!-- MCM compound IDs for hud_indicator_style dropdown -->
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_default">
+        <text>По умолчанию</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_arrows_bar">
+        <text>Полоса со стрелками</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_blue">
+        <text>Синий</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines">
+        <text>Затухающие линии</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines_dimmed">
+        <text>Затухающие линии (тусклые)</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_fading_lines_green">
+        <text>Затухающие линии (зелёные)</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_moving_train">
+        <text>Движущийся поезд</text>
+    </string>
+    <string id="loot_searching_hud_indicator_style_lst_st_looting_indicator_stampede">
+        <text>Топот</text>
+    </string>
+    
+    <!-- HUD Indicator Position -->
+    <string id="ui_mcm_loot_searching_hud_indicator_x">
+        <text>Позиция индикатора X</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_x_desc">
+        <text>Горизонтальная позиция анимированного индикатора.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_y">
+        <text>Позиция индикатора Y</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_y_desc">
+        <text>Вертикальная позиция анимированного индикатора.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_scale">
+        <text>Масштаб индикатора (%)</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_indicator_scale_desc">
+        <text>Масштаб анимированного индикатора (25-200%).</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_x">
+        <text>Позиция текста X</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_x_desc">
+        <text>Горизонтальная позиция текстового индикатора.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_y">
+        <text>Позиция текста Y</text>
+    </string>
+    <string id="ui_mcm_loot_searching_hud_text_y_desc">
+        <text>Вертикальная позиция текстового индикатора.</text>
+    </string>
+    
+    <!-- Sound Section -->
+    <string id="ui_mcm_loot_searching_header_sound">
+        <text>Звуковые эффекты</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable">
+        <text>Звук найденного предмета</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_desc">
+        <text>Воспроизводить звук при обнаружении.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_vol">
+        <text>Громкость звука предмета</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_enable_vol_desc">
+        <text>Громкость для звуков предметов.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable">
+        <text>Фоновый звук поиска</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_desc">
+        <text>Воспроизводить фоновые звуки обыска.</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_vol">
+        <text>Громкость фонового звука</text>
+    </string>
+    <string id="ui_mcm_loot_searching_sound_bg_enable_vol_desc">
+        <text>Громкость для фоновых звуков.</text>
+    </string>
+    
+    <!-- Debug Section -->
+    <string id="ui_mcm_loot_searching_header_debug">
+        <text>Отладка</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debugx">
+        <text>Включить отладочный вывод</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debugx_desc">
+        <text>Выводить сообщения в консоль.</text>
+    </string>
+    
+    <!-- HUD Text -->
+    <string id="st_xcvb_looting">
+        <text>Обыск</text>
+    </string>
+    <string id="st_xcvb_looting_bandit">
+        <text>Шманаю</text>
+    </string>
+</string_table>

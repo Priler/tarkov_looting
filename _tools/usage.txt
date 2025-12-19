@@ -1,0 +1,35 @@
+# Basic - convert GIF to 13 DDS frames (default for your mod)
+python gif_to_stalker_dds.py spinner.gif
+
+# Specify output folder
+python gif_to_stalker_dds.py spinner.gif -o ./my_frames
+
+# Different number of frames
+python gif_to_stalker_dds.py spinner.gif --frames 8
+
+# Convert a folder of PNG images
+python gif_to_stalker_dds.py ./png_frames/ -o ./output
+
+# Also generate the .seq file for STALKER animation
+python gif_to_stalker_dds.py spinner.gif --seq
+
+# Custom prefix and size
+python gif_to_stalker_dds.py spinner.gif --prefix my_icon_ --size 128
+
+# Scale content to fill 80% of the 256x256 canvas
+python gif_to_stalker_dds.py spinner.gif --fill 80
+
+# Scale to fill 90% for a larger icon
+python gif_to_stalker_dds.py spinner.gif --fill 90
+
+# For rotating animations like the half circle
+python gif_to_stalker_dds.py half_circle_green.gif --no-crop --seq
+
+# Finds the maximum bounding box across ALL frames and uses it consistently, so content stays centered
+python gif_to_stalker_dds.py half_circle_green.gif --no-crop --seq
+
+# For rotating icons (half_circle, wheel, arrows, etc.)
+python gif_to_stalker_dds.py ./rotating_icons --batch --no-crop --fill 80 --seq
+
+# For pulsing/scaling icons (growing_ring, etc.)
+python gif_to_stalker_dds.py ./pulsing_icons --batch -n --fill 80 --seq
