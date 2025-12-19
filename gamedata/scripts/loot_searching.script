@@ -1,15 +1,8 @@
 --[[
-    Looting Takes Time - Improved
+    Looting Takes Time - Redux
     Original by: xcvb
-    Improvements by: Abraham
-    
-    Features:
-    1. Items hidden until searched - no flash on open
-    2. Grid position preservation - items don't shuffle
-    3. Rank-based search time - higher rank = longer search
-    4. Two reveal modes: positional (L-R, T-B) or size-based
-    5. Dark silhouette placeholder mode
-    6. Animated "Searching..." indicator
+    Improvements by: Abraham (Priler)
+    Github repo: https://github.com/Priler/tarkov_looting
 --]]
 
 ------------------------------------------------------------------------
