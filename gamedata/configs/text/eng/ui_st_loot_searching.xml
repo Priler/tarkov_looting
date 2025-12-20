@@ -37,6 +37,12 @@
     <string id="ui_mcm_loot_searching_block_mags_redux_sort_desc">
         <text>Completely disable Magazines Redux auto-sorting in NPC inventory. Enable this if you experience item overlapping issues. Requires Magazines Redux to be installed.</text>
     </string>
+    <string id="ui_mcm_loot_searching_autolooter_show_blocked_msg">
+        <text>Show Autolooter Blocked Message</text>
+    </string>
+    <string id="ui_mcm_loot_searching_autolooter_show_blocked_msg_desc">
+        <text>Show a notification when iTheon Autolooter is blocked because items are still being revealed. Requires iTheon Autolooter to be installed.</text>
+    </string>
     
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
@@ -499,5 +505,10 @@
     </string>
     <string id="st_xcvb_looting_bandit">
         <text>Frisking</text>
+    </string>
+    
+    <!-- Autolooter Compatibility -->
+    <string id="st_looting_autolooter_blocked">
+        <text>Still searching...</text>
     </string>
 </string_table>

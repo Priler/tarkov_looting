@@ -126,6 +126,7 @@ local replace_snd_by_kind = {
 local enable_corpses = true
 local enable_containers = false
 local block_mags_redux_sort = false  -- Completely block Magazines Redux sorting in NPC inventory
+local autolooter_show_blocked_msg = true  -- Show message when autolooter is blocked
 local time_max = 20
 local first_item_delay = 1        -- Delay before anything appears
 local silhouette_appear_min = 0.2 -- Min random time for silhouette appearance
@@ -226,6 +227,7 @@ local function load_settings()
     
     -- Compatibility
     block_mags_redux_sort = get_bool("block_mags_redux_sort", false)
+    autolooter_show_blocked_msg = get_bool("autolooter_show_blocked_msg", true)
     
     -- Timing
     time_max = get_num("time_max", 20)
@@ -1544,6 +1546,60 @@ local function hook_sorting_plus()
     end
 end
 
+------------------------------------------------------------------------
+-- ITHEON AUTOLOOTER COMPATIBILITY
+------------------------------------------------------------------------
+-- Block autolooter during active looting to prevent it from accessing hidden items
+local function hook_autolooter()
+    -- Always log this check regardless of debug mode
+    printf("[LootTime] Checking for iTheon Autolooter: z_auto_looter=%s, auto_looter=%s", 
+        tostring(z_auto_looter ~= nil), 
+        tostring(z_auto_looter and z_auto_looter.auto_looter ~= nil))
+    
+    if not z_auto_looter then return end
+    if not z_auto_looter.auto_looter then return end
+    
+    printf("[LootTime] iTheon Autolooter detected, hooking auto_looter")
+    
+    local base_auto_looter = z_auto_looter.auto_looter
+    
+    function z_auto_looter.auto_looter(key, experimental_actor)
+        -- Get the actor the same way autolooter does
+        local actor = experimental_actor
+        if not experimental_actor then
+            if not z_auto_looter.is_right_key(key) then 
+                return base_auto_looter(key, experimental_actor)
+            end
+            actor = z_auto_looter.get_actor()
+        end
+        
+        -- Check if we have unrevealed items for this corpse
+        if actor then
+            local actor_id = actor:id()
+            if corpses[actor_id] then
+                local has_hidden = false
+                for item_id, state in pairs(corpses[actor_id]) do
+                    if state == "hidden" or state == "silhouette" then
+                        has_hidden = true
+                        break
+                    end
+                end
+                
+                if has_hidden then
+                    pr("  Blocking Autolooter - still searching corpse %d", actor_id)
+                    if autolooter_show_blocked_msg then
+                        news_manager.send_tip(db.actor, game.translate_string("st_looting_autolooter_blocked"), nil, nil, 3000)
+                    end
+                    return
+                end
+            end
+        end
+        
+        -- Let autolooter proceed normally
+        return base_auto_looter(key, experimental_actor)
+    end
+end
+
 function on_game_start()
     load_settings()
     -- Initialize caches
@@ -1552,6 +1608,7 @@ function on_game_start()
     -- Hook compatible mods if installed
     hook_magazines_redux()
     hook_sorting_plus()
+    hook_autolooter()
     
     RegisterScriptCallback("GUI_on_show", GUI_on_show)
     RegisterScriptCallback("GUI_on_hide", GUI_on_hide)

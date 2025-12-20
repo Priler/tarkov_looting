@@ -12,6 +12,7 @@ local defaults = {
     
     -- Compatibility
     ["block_mags_redux_sort"] = false,
+    ["autolooter_show_blocked_msg"] = true,
     
     -- Timing
     ["first_item_delay"] = 1,
@@ -116,6 +117,12 @@ function on_mcm_load()
                 type = "check",
                 val = 1,
                 def = false,
+            },
+            {
+                id = "autolooter_show_blocked_msg",
+                type = "check",
+                val = 1,
+                def = true,
             },
             
             -- REVEAL MODE SECTION

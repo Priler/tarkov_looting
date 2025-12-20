@@ -38,6 +38,13 @@
         <text>Полностью отключить авто-сортировку Magazines Redux в инвентаре NPC. Включите, если предметы накладываются. Требует установленный Magazines Redux.</text>
     </string>
     
+    <string id="ui_mcm_loot_searching_autolooter_show_blocked_msg">
+        <text>Показывать сообщение блокировки Autolooter</text>
+    </string>
+    <string id="ui_mcm_loot_searching_autolooter_show_blocked_msg_desc">
+        <text>Показывать уведомление, когда iTheon Autolooter заблокирован из-за того, что предметы ещё отображаются. Требует установленный iTheon Autolooter.</text>
+    </string>
+    
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
         <text>Настройки отображения</text>
@@ -499,5 +506,10 @@
     </string>
     <string id="st_xcvb_looting_bandit">
         <text>Шманаю</text>
+    </string>
+    
+    <!-- Autolooter Compatibility -->
+    <string id="st_looting_autolooter_blocked">
+        <text>Вы слишком заняты обыском ...</text>
     </string>
 </string_table>
