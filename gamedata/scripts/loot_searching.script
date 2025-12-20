@@ -1506,13 +1506,52 @@ local function hook_magazines_redux()
     end
 end
 
+------------------------------------------------------------------------
+-- SORTING PLUS COMPATIBILITY
+------------------------------------------------------------------------
+-- Suppress Sorting Plus re-sorting during active looting to prevent position conflicts
+local function hook_sorting_plus()
+    -- Always log this check regardless of debug mode
+    printf("[LootTime] Checking for Sorting Plus: rax_icon_layers=%s, refresh=%s", 
+        tostring(rax_icon_layers ~= nil), 
+        tostring(rax_icon_layers and rax_icon_layers.refresh ~= nil))
+    
+    if not rax_icon_layers then return end
+    if not rax_icon_layers.refresh then return end
+    
+    printf("[LootTime] Sorting Plus detected, hooking rax_icon_layers.refresh")
+    
+    local base_refresh = rax_icon_layers.refresh
+    
+    function rax_icon_layers.refresh(resort)
+        -- If actively looting with unrevealed items, suppress re-sort
+        if resort and cur_npc_id and corpses[cur_npc_id] then
+            local has_hidden = false
+            for item_id, state in pairs(corpses[cur_npc_id]) do
+                if state == "hidden" or state == "silhouette" then
+                    has_hidden = true
+                    break
+                end
+            end
+            
+            if has_hidden then
+                pr("  Suppressing Sorting Plus re-sort during active search")
+                return base_refresh(nil)  -- refresh without re-sort
+            end
+        end
+        
+        return base_refresh(resort)
+    end
+end
+
 function on_game_start()
     load_settings()
     -- Initialize caches
     update_silhouette_color_cache()
     
-    -- Hook Magazines Redux if installed
+    -- Hook compatible mods if installed
     hook_magazines_redux()
+    hook_sorting_plus()
     
     RegisterScriptCallback("GUI_on_show", GUI_on_show)
     RegisterScriptCallback("GUI_on_hide", GUI_on_hide)
