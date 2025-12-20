@@ -1,8 +1,15 @@
 --[[
-    Looting Takes Time - Redux
+    Looting Takes Time - Improved
     Original by: xcvb
-    Improvements by: Abraham (Priler)
-    Github repo: https://github.com/Priler/tarkov_looting
+    Improvements by: Abraham
+    
+    Features:
+    1. Items hidden until searched - no flash on open
+    2. Grid position preservation - items don't shuffle
+    3. Rank-based search time - higher rank = longer search
+    4. Two reveal modes: positional (L-R, T-B) or size-based
+    5. Dark silhouette placeholder mode
+    6. Animated "Searching..." indicator
 --]]
 
 ------------------------------------------------------------------------
@@ -32,6 +39,46 @@ local function get_aspect_correction()
         cached_aspect_correction = (screen_h / screen_w) * (4 / 3)
     end
     return cached_aspect_correction
+end
+
+------------------------------------------------------------------------
+-- HARUKA'S SKILLS INTEGRATION
+------------------------------------------------------------------------
+-- Returns time multiplier based on scavenging skill (1.0 = no bonus, 0.5 = max bonus)
+-- Automatically detects if Haruka's Skills mod is installed
+-- Also returns debug info: detected, current_level, max_level
+local function get_haruka_scavenging_multiplier()
+    -- Check if Haruka's Skills mod is installed
+    if not haru_skills then 
+        return 1.0, false, 0, 0
+    end
+    
+    -- Check if skills_levels table exists
+    if not haru_skills.skills_levels then 
+        return 1.0, false, 0, 0
+    end
+    
+    -- Check if scavenging skill exists
+    local scav = haru_skills.skills_levels["scavenging"]
+    if not scav then 
+        return 1.0, true, 0, 0  -- Mod detected but scavenging skill not found
+    end
+    
+    -- Get current and max level with safe defaults
+    local current_level = scav.current_level or 0
+    local max_level = scav.max_level or 15
+    
+    -- Prevent division by zero
+    if max_level <= 0 then
+        return 1.0, true, current_level, max_level
+    end
+    
+    -- Calculate multiplier: 1.0 at level 0, 0.5 at max level
+    -- Formula: mult = 1.0 - (progress * 0.5)
+    local progress = math.min(current_level / max_level, 1.0)  -- Clamp to 1.0 max
+    local multiplier = 1.0 - (progress * 0.5)
+    
+    return multiplier, true, current_level, max_level
 end
 
 local sfind = string.find
@@ -147,7 +194,14 @@ local rank_mult = {
 ------------------------------------------------------------------------
 local function pr(fmt, ...)
     if not debugx then return end
-    printf("[LootTime] " .. fmt, ...)
+    local args = {...}
+    local msg
+    if #args > 0 then
+        msg = string.format(fmt, ...)
+    else
+        msg = fmt
+    end
+    printf("[LootTime] %s", msg)
 end
 
 local function load_settings()
@@ -381,7 +435,30 @@ end
 
 local function sort_items_by_size(items)
     init_item_order()
+    
+    -- Check if Magazines Redux is installed for magazine prioritization
+    local is_magazine = magazine_binder and magazine_binder.is_magazine
+    local is_carried_mag = magazine_binder and magazine_binder.is_carried_mag
+    
     table.sort(items, function(a, b)
+        -- If Magazines Redux is installed, prioritize magazines
+        if is_magazine then
+            local a_carried = is_carried_mag and is_carried_mag(a.id)
+            local b_carried = is_carried_mag and is_carried_mag(b.id)
+            local a_mag = is_magazine(a.id)
+            local b_mag = is_magazine(b.id)
+            
+            -- Carried/ready mags first
+            if a_carried ~= b_carried then
+                return a_carried
+            end
+            -- Regular magazines second
+            if a_mag ~= b_mag then
+                return a_mag
+            end
+        end
+        
+        -- Standard sorting: by size, kind, section, id
         local aw, ah, ak = get_sort_info(a.sec)
         local bw, bh, bk = get_sort_info(b.sec)
         if aw ~= bw then return aw > bw end
@@ -633,13 +710,18 @@ local function calc_search_time(order_index, npc_id, total_items)
     time = time + get_random_delay()
     time = time * rmult
     
+    -- Apply Haruka's Skills scavenging bonus (if mod is installed)
+    -- Note: logging handled in ParseInventory to avoid duplicates
+    local haruka_mult = get_haruka_scavenging_multiplier()
+    time = time * haruka_mult
+    
     -- Cap max time based on total items count
-    local effective_max = time_max * rmult
+    local effective_max = time_max * rmult * haruka_mult
     if total_items then
         if total_items <= 2 then
-            effective_max = math.min(effective_max, 3.0)
+            effective_max = math.min(effective_max, 3.0 * haruka_mult)
         elseif total_items <= 5 then
-            effective_max = math.min(effective_max, 7.0)
+            effective_max = math.min(effective_max, 7.0 * haruka_mult)
         end
     end
     
@@ -778,6 +860,14 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
         corpses[npc_id] = {}
         corpse_rank[npc_id] = is_container and 1.0 or get_rank_multiplier(npc)
         
+        -- Get Haruka's Skills multiplier (and log status)
+        local haruka_mult, haruka_detected, haruka_level, haruka_max = get_haruka_scavenging_multiplier()
+        if haruka_detected then
+            pr("  Haruka's Skills: DETECTED (Scavenging level " .. haruka_level .. "/" .. haruka_max .. ", multiplier x" .. string.format("%.2f", haruka_mult) .. ")")
+        else
+            pr("  Haruka's Skills: NOT DETECTED")
+        end
+        
         calculate_positions(npc_id, npc)
         
         local function record_item(_, obj)
@@ -792,33 +882,34 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
             local total_items = #order
             local rmult = corpse_rank[npc_id] or 1.0
             
-            -- Determine effective max time based on item count
-            local effective_max = time_max * rmult
+            -- Determine effective max time based on item count (apply Haruka's Skills bonus)
+            local effective_max = time_max * rmult * haruka_mult
             if total_items <= 2 then
-                effective_max = math.min(effective_max, 3.0)
+                effective_max = math.min(effective_max, 3.0 * haruka_mult)
             elseif total_items <= 5 then
-                effective_max = math.min(effective_max, 7.0)
+                effective_max = math.min(effective_max, 7.0 * haruka_mult)
             end
             
             -- Track cumulative silhouette time
-            local cumulative_time = first_item_delay
+            local cumulative_time = first_item_delay * haruka_mult
             
             for i, item_id in ipairs(order) do
                 corpses[npc_id][item_id] = "hidden"
                 
-                -- Add random appear time for this item's silhouette
+                -- Add random appear time for this item's silhouette (scaled by Haruka's Skills)
                 local appear_time = silhouette_appear_min + math.random() * (silhouette_appear_max - silhouette_appear_min)
+                appear_time = appear_time * haruka_mult
                 cumulative_time = cumulative_time + appear_time
                 
                 -- Apply rank multiplier
                 local silhouette_time = cumulative_time * rmult
                 
                 -- Cap silhouette time (use max delay for safety margin)
-                silhouette_time = math.min(silhouette_time, effective_max - delay_between_max * 0.5)
+                silhouette_time = math.min(silhouette_time, effective_max - delay_between_max * haruka_mult * 0.5)
                 silhouette_time = math.max(silhouette_time, 0.1)
                 
-                -- Reveal time is silhouette time + random delay
-                local reveal_time = silhouette_time + get_random_delay()
+                -- Reveal time is silhouette time + random delay (scaled by Haruka's Skills)
+                local reveal_time = silhouette_time + get_random_delay() * haruka_mult
                 reveal_time = math.min(reveal_time, effective_max)
                 
                 CreateTimeEvent("item_silhouette", "silhouette_" .. npc_id .. "_" .. item_id,
@@ -859,32 +950,39 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                 
                 resumed_search[npc_id] = true  -- Mark as resumed
                 
+                -- Get Haruka's Skills multiplier for resumed search
+                local haruka_mult, haruka_detected, haruka_level, haruka_max = get_haruka_scavenging_multiplier()
+                if haruka_detected then
+                    pr("  Haruka's Skills: DETECTED (Scavenging level " .. haruka_level .. "/" .. haruka_max .. ", multiplier x" .. string.format("%.2f", haruka_mult) .. ")")
+                end
+                
                 -- Recreate time events for remaining items
                 local remaining_items = hidden_count + silhouette_count
                 local rmult = corpse_rank[npc_id] or 1.0
                 
-                -- Determine effective max time
-                local effective_max = time_max * rmult
+                -- Determine effective max time (with Haruka's Skills bonus)
+                local effective_max = time_max * rmult * haruka_mult
                 if remaining_items <= 2 then
-                    effective_max = math.min(effective_max, 3.0)
+                    effective_max = math.min(effective_max, 3.0 * haruka_mult)
                 elseif remaining_items <= 5 then
-                    effective_max = math.min(effective_max, 7.0)
+                    effective_max = math.min(effective_max, 7.0 * haruka_mult)
                 end
                 
                 -- Track cumulative time for hidden items
-                local cumulative_time = first_item_delay
+                local cumulative_time = first_item_delay * haruka_mult
                 
                 for item_id, state in pairs(corpses[npc_id]) do
                     if state == "hidden" then
                         if placeholder_mode == 2 then
-                            -- Two-stage: schedule silhouette then reveal
+                            -- Two-stage: schedule silhouette then reveal (with Haruka's Skills bonus)
                             local appear_time = silhouette_appear_min + math.random() * (silhouette_appear_max - silhouette_appear_min)
+                            appear_time = appear_time * haruka_mult
                             cumulative_time = cumulative_time + appear_time
                             
-                            local silhouette_time = math.min(cumulative_time * rmult, effective_max - delay_between_max * 0.5)
+                            local silhouette_time = math.min(cumulative_time * rmult, effective_max - delay_between_max * haruka_mult * 0.5)
                             silhouette_time = math.max(silhouette_time, 0.1)
                             
-                            local reveal_time = math.min(silhouette_time + get_random_delay(), effective_max)
+                            local reveal_time = math.min(silhouette_time + get_random_delay() * haruka_mult, effective_max)
                             
                             CreateTimeEvent("item_silhouette", "silhouette_" .. npc_id .. "_" .. item_id,
                                             silhouette_time, reveal_silhouette, npc_id, item_id)
@@ -897,8 +995,8 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                                             search_time, reveal_item, npc_id, item_id)
                         end
                     elseif state == "silhouette" then
-                        -- Already silhouette, just schedule reveal with random delay
-                        local reveal_time = math.min(get_random_delay(), effective_max)
+                        -- Already silhouette, just schedule reveal with random delay (with Haruka's Skills bonus)
+                        local reveal_time = math.min(get_random_delay() * haruka_mult, effective_max)
                         CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
                                         reveal_time, reveal_item, npc_id, item_id)
                     end
@@ -1343,10 +1441,48 @@ end
 ------------------------------------------------------------------------
 -- INIT
 ------------------------------------------------------------------------
+------------------------------------------------------------------------
+-- MAGAZINES REDUX COMPATIBILITY
+------------------------------------------------------------------------
+-- Suppress Magazines Redux sorting during active looting to prevent position conflicts
+local function hook_magazines_redux()
+    if not magazines then return end
+    if not magazines.inventory_refresh then return end
+    
+    pr("Magazines Redux detected, hooking inventory_refresh")
+    
+    local base_mag_inventory_refresh = magazines.inventory_refresh
+    
+    function magazines.inventory_refresh(mode)
+        -- Check if we're actively looting with unrevealed items
+        if cur_npc_id and corpses[cur_npc_id] then
+            local has_hidden = false
+            for item_id, state in pairs(corpses[cur_npc_id]) do
+                if state == "hidden" or state == "silhouette" then
+                    has_hidden = true
+                    break
+                end
+            end
+            
+            -- If still searching, force simple refresh (mode=2) instead of full sort
+            if has_hidden then
+                pr("  Suppressing Magazines Redux sort during active search")
+                return base_mag_inventory_refresh(2)
+            end
+        end
+        
+        -- Otherwise let it sort normally
+        return base_mag_inventory_refresh(mode)
+    end
+end
+
 function on_game_start()
     load_settings()
     -- Initialize caches
     update_silhouette_color_cache()
+    
+    -- Hook Magazines Redux if installed
+    hook_magazines_redux()
     
     RegisterScriptCallback("GUI_on_show", GUI_on_show)
     RegisterScriptCallback("GUI_on_hide", GUI_on_hide)
