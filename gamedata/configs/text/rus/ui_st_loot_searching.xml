@@ -27,6 +27,17 @@
         <text>Применять задержку при обыске тайников и контейнеров.</text>
     </string>
     
+    <!-- Compatibility Section -->
+    <string id="ui_mcm_loot_searching_compat_header">
+        <text>Совместимость с модами</text>
+    </string>
+    <string id="ui_mcm_loot_searching_block_mags_redux_sort">
+        <text>Блокировать сортировку Magazines Redux</text>
+    </string>
+    <string id="ui_mcm_loot_searching_block_mags_redux_sort_desc">
+        <text>Полностью отключить авто-сортировку Magazines Redux в инвентаре NPC. Включите, если предметы накладываются. Требует установленный Magazines Redux.</text>
+    </string>
+    
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
         <text>Настройки отображения</text>

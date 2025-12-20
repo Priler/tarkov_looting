@@ -27,6 +27,17 @@
         <text>Apply looting delay when searching stashes and containers.</text>
     </string>
     
+    <!-- Compatibility Section -->
+    <string id="ui_mcm_loot_searching_compat_header">
+        <text>Mod Compatibility</text>
+    </string>
+    <string id="ui_mcm_loot_searching_block_mags_redux_sort">
+        <text>Block Magazines Redux Inventory Sort</text>
+    </string>
+    <string id="ui_mcm_loot_searching_block_mags_redux_sort_desc">
+        <text>Completely disable Magazines Redux auto-sorting in NPC inventory. Enable this if you experience item overlapping issues. Requires Magazines Redux to be installed.</text>
+    </string>
+    
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
         <text>Item Reveal Settings</text>

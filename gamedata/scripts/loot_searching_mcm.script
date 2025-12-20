@@ -10,6 +10,9 @@ local defaults = {
     ["enable_corpses"] = true,
     ["enable_containers"] = false,
     
+    -- Compatibility
+    ["block_mags_redux_sort"] = false,
+    
     -- Timing
     ["first_item_delay"] = 1,
     ["silhouette_appear_min"] = 0.2,
@@ -96,6 +99,20 @@ function on_mcm_load()
             },
             {
                 id = "enable_containers",
+                type = "check",
+                val = 1,
+                def = false,
+            },
+            
+            -- COMPATIBILITY SECTION
+            { id = "divider", type = "line" },
+            {
+                id = "compat_header",
+                type = "title",
+                text = "ui_mcm_loot_searching_compat_header",
+            },
+            {
+                id = "block_mags_redux_sort",
                 type = "check",
                 val = 1,
                 def = false,

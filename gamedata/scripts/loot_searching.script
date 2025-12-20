@@ -125,6 +125,7 @@ local replace_snd_by_kind = {
 ------------------------------------------------------------------------
 local enable_corpses = true
 local enable_containers = false
+local block_mags_redux_sort = false  -- Completely block Magazines Redux sorting in NPC inventory
 local time_max = 20
 local first_item_delay = 1        -- Delay before anything appears
 local silhouette_appear_min = 0.2 -- Min random time for silhouette appearance
@@ -222,6 +223,9 @@ local function load_settings()
     -- Targets
     enable_corpses = get_bool("enable_corpses", true)
     enable_containers = get_bool("enable_containers", false)
+    
+    -- Compatibility
+    block_mags_redux_sort = get_bool("block_mags_redux_sort", false)
     
     -- Timing
     time_max = get_num("time_max", 20)
@@ -785,6 +789,21 @@ function reveal_item(npc_id, item_id)
     
     -- Remove loading spinner if present
     remove_spinner(item_id)
+    
+    -- Check if all items are now revealed
+    local all_revealed = true
+    for id, st in pairs(corpses[npc_id]) do
+        if st == "hidden" or st == "silhouette" then
+            all_revealed = false
+            break
+        end
+    end
+    
+    -- If all items revealed, clear position cache to allow normal sorting
+    if all_revealed and item_positions[npc_id] then
+        pr(">>> All items revealed for %d, clearing position cache (Magazines Redux can now sort freely)", npc_id)
+        item_positions[npc_id] = nil
+    end
     
     -- Restore cell color if in placeholder mode
     local gui = ui_inventory.GUI
@@ -1446,14 +1465,25 @@ end
 ------------------------------------------------------------------------
 -- Suppress Magazines Redux sorting during active looting to prevent position conflicts
 local function hook_magazines_redux()
+    -- Always log this check regardless of debug mode
+    printf("[LootTime] Checking for Magazines Redux: magazines=%s, inventory_refresh=%s", 
+        tostring(magazines ~= nil), 
+        tostring(magazines and magazines.inventory_refresh ~= nil))
+    
     if not magazines then return end
     if not magazines.inventory_refresh then return end
     
-    pr("Magazines Redux detected, hooking inventory_refresh")
+    printf("[LootTime] Magazines Redux detected, hooking inventory_refresh (block_sort=%s)", tostring(block_mags_redux_sort))
     
     local base_mag_inventory_refresh = magazines.inventory_refresh
     
     function magazines.inventory_refresh(mode)
+        -- If complete blocking is enabled, always force simple refresh
+        if block_mags_redux_sort then
+            pr("  Blocking Magazines Redux sort (MCM option enabled)")
+            return base_mag_inventory_refresh(2)
+        end
+        
         -- Check if we're actively looting with unrevealed items
         if cur_npc_id and corpses[cur_npc_id] then
             local has_hidden = false
