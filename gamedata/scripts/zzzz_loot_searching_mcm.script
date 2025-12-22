@@ -62,6 +62,7 @@ local defaults = {
     
     -- Debug
     ["debugx"] = false,
+    ["debug_haruka_max_level"] = false,
 }
 
 function get_config(key)
@@ -504,6 +505,12 @@ function on_mcm_load()
             },
             {
                 id = "debugx",
+                type = "check",
+                val = 1,
+                def = false,
+            },
+            {
+                id = "debug_haruka_max_level",
                 type = "check",
                 val = 1,
                 def = false,

@@ -500,7 +500,14 @@
         <text>Выводить сообщения в консоль.</text>
     </string>
     
-    <!-- HUD Text -->
+    <string id="ui_mcm_loot_searching_debug_haruka_max_level">
+        <text>Симуляция макс. уровня обыска</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debug_haruka_max_level_desc">
+        <text>Имитировать максимальный уровень навыка обыска из Haruka's Skills (максимальная скорость). Работает даже без Haruka's Skills.</text>
+    </string>
+    
+        <!-- HUD Text -->
     <string id="st_xcvb_looting">
         <text>Обыск</text>
     </string>

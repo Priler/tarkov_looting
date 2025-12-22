@@ -48,25 +48,46 @@ end
 -- Automatically detects if Haruka's Skills mod is installed
 -- Also returns debug info: detected, current_level, max_level
 local function get_haruka_scavenging_multiplier()
+    -- Read debug setting directly from MCM (so changes take effect immediately)
+    local debug_max = false
+    if ui_mcm and ui_mcm.get then
+        debug_max = ui_mcm.get("loot_searching/debug_haruka_max_level")
+    end
+    
     -- Check if Haruka's Skills mod is installed
     if not haru_skills then 
+        -- If debug mode is enabled but Haruka's Skills not installed, simulate it
+        if debug_max then
+            return 0.5, true, 15, 15  -- Simulate max level (0.5x multiplier)
+        end
         return 1.0, false, 0, 0
     end
     
     -- Check if skills_levels table exists
     if not haru_skills.skills_levels then 
+        if debug_max then
+            return 0.5, true, 15, 15  -- Simulate max level
+        end
         return 1.0, false, 0, 0
     end
     
     -- Check if scavenging skill exists
     local scav = haru_skills.skills_levels["scavenging"]
     if not scav then 
+        if debug_max then
+            return 0.5, true, 15, 15  -- Simulate max level
+        end
         return 1.0, true, 0, 0  -- Mod detected but scavenging skill not found
     end
     
     -- Get current and max level with safe defaults
     local current_level = scav.current_level or 0
     local max_level = scav.max_level or 15
+    
+    -- Debug: Override to max level if enabled
+    if debug_max then
+        current_level = max_level
+    end
     
     -- Prevent division by zero
     if max_level <= 0 then
@@ -133,6 +154,7 @@ local silhouette_appear_min = 0.2 -- Min random time for silhouette appearance
 local silhouette_appear_max = 1.5 -- Max random time for silhouette appearance
 local delay_between_min = 0.1     -- Min delay from silhouette to reveal
 local delay_between_max = 1.0     -- Max delay from silhouette to reveal
+local min_reveal_interval = 0.05  -- Minimum time between item reveals (prevents overlap at high speed)
 local silhouette_intensity = 90   -- Darkness percentage (0-100)
 local silhouette_color_r = 0      -- Base color R (0-255)
 local silhouette_color_g = 0      -- Base color G (0-255)
@@ -179,6 +201,7 @@ local rank_enable = true
 local reveal_mode = 1           -- 1=positional, 2=size-based
 local placeholder_mode = 1      -- 0=none, 1=dark silhouettes, 2=loading icon
 local debugx = false
+local debug_haruka_max_level = false  -- Simulate max Haruka's Skills scavenging level
 
 local rank_mult = {
     ["novice"] = 0.5,
@@ -207,7 +230,7 @@ local function pr(fmt, ...)
 end
 
 local function load_settings()
-    local mcm = loot_searching_mcm
+    local mcm = zzzz_loot_searching_mcm
     
     local function get_num(key, default)
         local val = mcm.get_config(key)
@@ -275,6 +298,7 @@ local function load_settings()
     reveal_mode = get_num("reveal_mode", 1)
     placeholder_mode = get_num("placeholder_mode", 1)
     debugx = get_bool("debugx", false)
+    debug_haruka_max_level = get_bool("debug_haruka_max_level", false)
     
     rank_mult["novice"] = get_num("rank_novice", 0.5)
     rank_mult["trainee"] = get_num("rank_novice", 0.5)
@@ -478,6 +502,28 @@ end
 
 local function calculate_positions(npc_id, npc)
     item_positions[npc_id] = {}
+    
+    -- OPTION 1: Force reset the game's actual grid to prevent desync
+    local gui = ui_inventory.GUI
+    if gui and gui.CC and gui.CC["npc_bag"] then
+        local cc = gui.CC["npc_bag"]
+        -- Reset the grid to clear any stale state
+        if cc.grid then
+            for r = 1, #cc.grid do
+                for c = 1, #cc.grid[r] do
+                    cc.grid[r][c] = true
+                end
+            end
+        end
+        -- Also reset tracking variables
+        if cc.rKind then
+            cc.rKind.last = nil
+            cc.rKind.current = nil
+            cc.rKind.row = 1
+        end
+        cc.row_end = 0
+        pr("  Force reset npc_bag grid before position calculation")
+    end
     
     local items = {}
     local function collect(_, obj)
@@ -891,6 +937,28 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
         
         calculate_positions(npc_id, npc)
         
+        -- Option 1: Force reset game's actual grid to sync with our virtual grid
+        local gui = ui_inventory.GUI
+        if gui and gui.CC and gui.CC["npc_bag"] then
+            local cc = gui.CC["npc_bag"]
+            -- Clear the actual grid state
+            if cc.grid then
+                for r = 1, #cc.grid do
+                    for c = 1, (cc.cols or 10) do
+                        cc.grid[r][c] = true  -- Mark all cells as free
+                    end
+                end
+            end
+            -- Reset row tracking
+            if cc.row_end then cc.row_end = 0 end
+            if cc.rKind then
+                cc.rKind.last = nil
+                cc.rKind.current = nil
+                cc.rKind.row = 1
+            end
+            pr("  Synced game grid state")
+        end
+        
         local function record_item(_, obj)
             initial_inv[npc_id][obj:id()] = true
         end
@@ -914,6 +982,9 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
             -- Track cumulative silhouette time
             local cumulative_time = first_item_delay * haruka_mult
             
+            -- OPTION 2: Track last reveal time to enforce minimum interval
+            local last_reveal_time = 0
+            
             for i, item_id in ipairs(order) do
                 corpses[npc_id][item_id] = "hidden"
                 
@@ -933,6 +1004,12 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                 local reveal_time = silhouette_time + get_random_delay() * haruka_mult
                 reveal_time = math.min(reveal_time, effective_max)
                 
+                -- OPTION 2: Enforce minimum interval between reveals
+                if reveal_time < last_reveal_time + min_reveal_interval then
+                    reveal_time = last_reveal_time + min_reveal_interval
+                end
+                last_reveal_time = reveal_time
+                
                 CreateTimeEvent("item_silhouette", "silhouette_" .. npc_id .. "_" .. item_id,
                                 silhouette_time, reveal_silhouette, npc_id, item_id)
                 CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
@@ -941,9 +1018,17 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
         else
             -- Normal mode: single-stage reveal
             local total_items = #order
+            local last_reveal_time = 0  -- OPTION 2: Track last reveal time
             for i, item_id in ipairs(order) do
                 corpses[npc_id][item_id] = "hidden"
                 local search_time = calc_search_time(i, npc_id, total_items)
+                
+                -- OPTION 2: Enforce minimum interval between reveals
+                if search_time < last_reveal_time + min_reveal_interval then
+                    search_time = last_reveal_time + min_reveal_interval
+                end
+                last_reveal_time = search_time
+                
                 CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
                                 search_time, reveal_item, npc_id, item_id)
             end
@@ -992,6 +1077,9 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                 -- Track cumulative time for hidden items
                 local cumulative_time = first_item_delay * haruka_mult
                 
+                -- OPTION 2: Track last reveal time to enforce minimum interval
+                local last_reveal_time = 0
+                
                 for item_id, state in pairs(corpses[npc_id]) do
                     if state == "hidden" then
                         if placeholder_mode == 2 then
@@ -1005,6 +1093,12 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                             
                             local reveal_time = math.min(silhouette_time + get_random_delay() * haruka_mult, effective_max)
                             
+                            -- OPTION 2: Enforce minimum interval between reveals
+                            if reveal_time < last_reveal_time + min_reveal_interval then
+                                reveal_time = last_reveal_time + min_reveal_interval
+                            end
+                            last_reveal_time = reveal_time
+                            
                             CreateTimeEvent("item_silhouette", "silhouette_" .. npc_id .. "_" .. item_id,
                                             silhouette_time, reveal_silhouette, npc_id, item_id)
                             CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
@@ -1012,12 +1106,26 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                         else
                             -- Single-stage: use calc_search_time
                             local search_time = calc_search_time(remaining_items, npc_id, remaining_items)
+                            
+                            -- OPTION 2: Enforce minimum interval between reveals
+                            if search_time < last_reveal_time + min_reveal_interval then
+                                search_time = last_reveal_time + min_reveal_interval
+                            end
+                            last_reveal_time = search_time
+                            
                             CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
                                             search_time, reveal_item, npc_id, item_id)
                         end
                     elseif state == "silhouette" then
                         -- Already silhouette, just schedule reveal with random delay (with Haruka's Skills bonus)
                         local reveal_time = math.min(get_random_delay() * haruka_mult, effective_max)
+                        
+                        -- OPTION 2: Enforce minimum interval between reveals
+                        if reveal_time < last_reveal_time + min_reveal_interval then
+                            reveal_time = last_reveal_time + min_reveal_interval
+                        end
+                        last_reveal_time = reveal_time
+                        
                         CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
                                         reveal_time, reveal_item, npc_id, item_id)
                     end

@@ -498,6 +498,12 @@
     <string id="ui_mcm_loot_searching_debugx_desc">
         <text>Print debug messages to console.</text>
     </string>
+    <string id="ui_mcm_loot_searching_debug_haruka_max_level">
+        <text>Simulate Max Scavenging Skill</text>
+    </string>
+    <string id="ui_mcm_loot_searching_debug_haruka_max_level_desc">
+        <text>Simulate maximum Haruka's Skills scavenging level (fastest looting speed). Useful for testing overlap issues. Works even without Haruka's Skills installed.</text>
+    </string>
     
     <!-- HUD Text -->
     <string id="st_xcvb_looting">
@@ -509,6 +515,6 @@
     
     <!-- Autolooter Compatibility -->
     <string id="st_looting_autolooter_blocked">
-        <text>Still searching...</text>
+        <text>Still searching... wait for all items to be revealed.</text>
     </string>
 </string_table>
