@@ -148,6 +148,7 @@ local enable_corpses = true
 local enable_containers = false
 local block_mags_redux_sort = false  -- Completely block Magazines Redux sorting in NPC inventory
 local autolooter_show_blocked_msg = true  -- Show message when autolooter is blocked
+local presort_grid = true  -- Pre-sort items on grid (larger items first)
 local time_max = 20
 local first_item_delay = 1        -- Delay before anything appears
 local silhouette_appear_min = 0.2 -- Min random time for silhouette appearance
@@ -251,6 +252,7 @@ local function load_settings()
     -- Compatibility
     block_mags_redux_sort = get_bool("block_mags_redux_sort", false)
     autolooter_show_blocked_msg = get_bool("autolooter_show_blocked_msg", true)
+    presort_grid = get_bool("presort_grid", true)
     
     -- Timing
     time_max = get_num("time_max", 20)
@@ -503,35 +505,51 @@ end
 local function calculate_positions(npc_id, npc)
     item_positions[npc_id] = {}
     
-    -- OPTION 1: Force reset the game's actual grid to prevent desync
-    local gui = ui_inventory.GUI
-    if gui and gui.CC and gui.CC["npc_bag"] then
-        local cc = gui.CC["npc_bag"]
-        -- Reset the grid to clear any stale state
-        if cc.grid then
-            for r = 1, #cc.grid do
-                for c = 1, #cc.grid[r] do
-                    cc.grid[r][c] = true
+    -- Read presort_grid directly from MCM for immediate effect
+    local do_presort = presort_grid
+    if ui_mcm and ui_mcm.get then
+        local mcm_val = ui_mcm.get("loot_searching/presort_grid")
+        if mcm_val ~= nil then
+            do_presort = mcm_val
+        end
+    end
+    
+    -- OPTION 1: Force reset the game's actual grid to prevent desync (only when pre-sorting)
+    if do_presort then
+        local gui = ui_inventory.GUI
+        if gui and gui.CC and gui.CC["npc_bag"] then
+            local cc = gui.CC["npc_bag"]
+            -- Reset the grid to clear any stale state
+            if cc.grid then
+                for r = 1, #cc.grid do
+                    for c = 1, #cc.grid[r] do
+                        cc.grid[r][c] = true
+                    end
                 end
             end
+            -- Also reset tracking variables
+            if cc.rKind then
+                cc.rKind.last = nil
+                cc.rKind.current = nil
+                cc.rKind.row = 1
+            end
+            cc.row_end = 0
+            pr("  Force reset npc_bag grid before position calculation")
         end
-        -- Also reset tracking variables
-        if cc.rKind then
-            cc.rKind.last = nil
-            cc.rKind.current = nil
-            cc.rKind.row = 1
-        end
-        cc.row_end = 0
-        pr("  Force reset npc_bag grid before position calculation")
     end
     
     local items = {}
+    local seen_ids = {}  -- Prevent duplicates from iterate_inventory + iterate_ruck
     local function collect(_, obj)
+        local id = obj:id()
+        if seen_ids[id] then return end  -- Skip duplicates
+        seen_ids[id] = true
+        
         local sec = obj:section()
         local w, h = get_sort_info(sec)
         local weight = SYS_GetParam(2, sec, "inv_weight", 1)
         table.insert(items, { 
-            id = obj:id(), 
+            id = id, 
             sec = sec,
             w = w,
             h = h,
@@ -540,6 +558,7 @@ local function calculate_positions(npc_id, npc)
         })
     end
     npc:iterate_inventory(collect, npc)
+    npc:iterate_ruck(collect, npc)  -- Also check ruck/backpack
     
     sort_items_by_size(items)
     
@@ -917,6 +936,9 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
     local npc_id = npc:id()
     if npc_id == AC_ID then return inv end
     
+    -- Set cur_npc_id IMMEDIATELY so FindFreeCell knows which corpse we're working with
+    cur_npc_id = npc_id
+    
     -- Initialize corpse/container immediately if not done yet (prevents flash)
     if not initial_inv[npc_id] then
         local is_container = IsInvbox(npc)
@@ -935,34 +957,14 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
             pr("  Haruka's Skills: NOT DETECTED")
         end
         
+        -- Always calculate positions (needed for reveal order, grid reset handled inside if presort enabled)
         calculate_positions(npc_id, npc)
-        
-        -- Option 1: Force reset game's actual grid to sync with our virtual grid
-        local gui = ui_inventory.GUI
-        if gui and gui.CC and gui.CC["npc_bag"] then
-            local cc = gui.CC["npc_bag"]
-            -- Clear the actual grid state
-            if cc.grid then
-                for r = 1, #cc.grid do
-                    for c = 1, (cc.cols or 10) do
-                        cc.grid[r][c] = true  -- Mark all cells as free
-                    end
-                end
-            end
-            -- Reset row tracking
-            if cc.row_end then cc.row_end = 0 end
-            if cc.rKind then
-                cc.rKind.last = nil
-                cc.rKind.current = nil
-                cc.rKind.row = 1
-            end
-            pr("  Synced game grid state")
-        end
         
         local function record_item(_, obj)
             initial_inv[npc_id][obj:id()] = true
         end
         npc:iterate_inventory(record_item, npc)
+        npc:iterate_ruck(record_item, npc)  -- Also check ruck/backpack
         
         local order = item_reveal_order[npc_id]
         
@@ -1016,11 +1018,13 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
                                 reveal_time, reveal_item, npc_id, item_id)
             end
         else
-            -- Normal mode: single-stage reveal
+            -- Normal mode (mode 0 or 1): single-stage reveal
             local total_items = #order
             local last_reveal_time = 0  -- OPTION 2: Track last reveal time
             for i, item_id in ipairs(order) do
-                corpses[npc_id][item_id] = "hidden"
+                -- Mode 1 (silhouettes): start as "silhouette" so items show immediately with dark effect
+                -- Mode 0 (no placeholder): start as "hidden" so items are filtered out
+                corpses[npc_id][item_id] = (placeholder_mode == 1) and "silhouette" or "hidden"
                 local search_time = calc_search_time(i, npc_id, total_items)
                 
                 -- OPTION 2: Enforce minimum interval between reveals
@@ -1136,8 +1140,171 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
         cur_npc_id = npc_id
     end
     
-    -- Dark silhouettes mode: show all items (visuals applied in Update)
+    -- Detect dynamically spawned items (e.g., from Haruka's Scavenging skill bonus)
+    -- These items appear AFTER initial tracking, so we need to add them with reveal timers
+    if initial_inv[npc_id] and corpses[npc_id] then
+        local new_items = {}
+        local function check_new(_, obj)
+            local item_id = obj:id()
+            -- Item exists but not in our tracking = dynamically spawned
+            if not initial_inv[npc_id][item_id] and not corpses[npc_id][item_id] then
+                table.insert(new_items, { id = item_id, obj = obj })
+            end
+        end
+        npc:iterate_inventory(check_new, npc)
+        
+        if #new_items > 0 then
+            pr("=== Detected %d dynamically spawned items (Haruka bonus?) ===", #new_items)
+            
+            -- Get Haruka's Skills multiplier for timing
+            local haruka_mult = get_haruka_scavenging_multiplier()
+            local rmult = corpse_rank[npc_id] or 1.0
+            
+            -- Check if presort is enabled - need to calculate positions for new items
+            local do_presort = presort_grid
+            if ui_mcm and ui_mcm.get then
+                local mcm_val = ui_mcm.get("loot_searching/presort_grid")
+                if mcm_val ~= nil then
+                    do_presort = mcm_val
+                end
+            end
+            
+            -- If presort enabled, we need to find free positions for new items
+            if do_presort and item_positions[npc_id] then
+                local gui = ui_inventory.GUI
+                local cols = 10
+                if gui and gui.CC and gui.CC["npc_bag"] and gui.CC["npc_bag"].cols then
+                    cols = gui.CC["npc_bag"].cols
+                end
+                
+                -- Rebuild grid state from existing positions
+                local grid = {}
+                for r = 1, 100 do
+                    grid[r] = {}
+                    for c = 1, cols do
+                        grid[r][c] = true
+                    end
+                end
+                
+                -- Mark cells taken by existing items
+                for _, pos in pairs(item_positions[npc_id]) do
+                    for r = pos.row, pos.row + pos.h - 1 do
+                        for c = pos.col, pos.col + pos.w - 1 do
+                            if grid[r] then
+                                grid[r][c] = false
+                            end
+                        end
+                    end
+                end
+                
+                -- Helper functions for finding free space
+                local function is_free(row, col, w, h)
+                    if col + w - 1 > cols then return false end
+                    for r = row, row + h - 1 do
+                        if not grid[r] then return false end
+                        for c = col, col + w - 1 do
+                            if not grid[r][c] then return false end
+                        end
+                    end
+                    return true
+                end
+                
+                local function take(row, col, w, h)
+                    for r = row, row + h - 1 do
+                        for c = col, col + w - 1 do
+                            if grid[r] then
+                                grid[r][c] = false
+                            end
+                        end
+                    end
+                end
+                
+                local function find_free(w, h)
+                    for row = 1, 100 do
+                        for col = 1, cols - w + 1 do
+                            if is_free(row, col, w, h) then
+                                return row, col
+                            end
+                        end
+                    end
+                    return 1, 1  -- Fallback
+                end
+                
+                -- Calculate positions for new items
+                for _, item_data in ipairs(new_items) do
+                    local item_id = item_data.id
+                    local obj = item_data.obj
+                    local sec = obj:section()
+                    local w, h = get_sort_info(sec)
+                    
+                    local row, col = find_free(w, h)
+                    take(row, col, w, h)
+                    item_positions[npc_id][item_id] = { row = row, col = col, w = w, h = h }
+                    pr("  Position for new item %d: row=%d, col=%d, size=%dx%d", item_id, row, col, w, h)
+                end
+            end
+            
+            for _, item_data in ipairs(new_items) do
+                local item_id = item_data.id
+                local obj = item_data.obj
+                local sec = obj:section()
+                
+                -- Add to tracking
+                initial_inv[npc_id][item_id] = true
+                
+                -- Calculate reveal time (shorter delay for bonus items)
+                local reveal_time = (0.5 + math.random() * 2.0) * rmult * haruka_mult
+                
+                if placeholder_mode == 2 then
+                    -- Two-stage: show silhouette quickly, then reveal
+                    corpses[npc_id][item_id] = "hidden"
+                    local silhouette_time = 0.1 + math.random() * 0.3
+                    CreateTimeEvent("item_silhouette", "silhouette_" .. npc_id .. "_" .. item_id,
+                                    silhouette_time, reveal_silhouette, npc_id, item_id)
+                    CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
+                                    reveal_time, reveal_item, npc_id, item_id)
+                elseif placeholder_mode == 1 then
+                    -- Silhouette mode: start as silhouette
+                    corpses[npc_id][item_id] = "silhouette"
+                    CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
+                                    reveal_time, reveal_item, npc_id, item_id)
+                else
+                    -- No placeholder: start hidden
+                    corpses[npc_id][item_id] = "hidden"
+                    CreateTimeEvent("item_hiding", "item_hiding_" .. npc_id .. "_" .. item_id,
+                                    reveal_time, reveal_item, npc_id, item_id)
+                end
+                
+                pr("  New item: %d (%s) -> reveal in %.2fs", item_id, sec, reveal_time)
+            end
+        end
+    end
+    
+    -- Dark silhouettes mode: show "silhouette" items (visuals applied in Update)
+    -- Filter out any "hidden" items (shouldn't exist in mode 1, but be safe)
     if placeholder_mode == 1 then
+        if id_list then
+            for item_id, _ in pairs(inv) do
+                local state = corpses[npc_id] and corpses[npc_id][item_id]
+                if state == "hidden" then
+                    inv[item_id] = nil
+                end
+            end
+        else
+            local filtered = {}
+            local idx = 1
+            for k, obj in pairs(inv) do
+                if obj and type(obj.id) == "function" then
+                    local item_id = obj:id()
+                    local state = corpses[npc_id] and corpses[npc_id][item_id]
+                    if state ~= "hidden" then
+                        filtered[idx] = obj
+                        idx = idx + 1
+                    end
+                end
+            end
+            inv = filtered
+        end
         return inv
     end
     
@@ -1203,6 +1370,20 @@ local baseFindFreeCell = utils_ui.UICellContainer.FindFreeCell
 
 function utils_ui.UICellContainer:FindFreeCell(obj, sec)
     if self.ID ~= "npc_bag" then
+        return baseFindFreeCell(self, obj, sec)
+    end
+    
+    -- Read presort_grid directly from MCM for immediate effect
+    local do_presort = presort_grid
+    if ui_mcm and ui_mcm.get then
+        local mcm_val = ui_mcm.get("loot_searching/presort_grid")
+        if mcm_val ~= nil then
+            do_presort = mcm_val
+        end
+    end
+    
+    -- Skip pre-sorting if disabled
+    if not do_presort then
         return baseFindFreeCell(self, obj, sec)
     end
     

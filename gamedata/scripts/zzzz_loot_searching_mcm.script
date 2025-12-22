@@ -13,6 +13,7 @@ local defaults = {
     -- Compatibility
     ["block_mags_redux_sort"] = false,
     ["autolooter_show_blocked_msg"] = true,
+    ["presort_grid"] = true,  -- Pre-sort items on grid (larger items first)
     
     -- Timing
     ["first_item_delay"] = 1,
@@ -121,6 +122,12 @@ function on_mcm_load()
             },
             {
                 id = "autolooter_show_blocked_msg",
+                type = "check",
+                val = 1,
+                def = true,
+            },
+            {
+                id = "presort_grid",
                 type = "check",
                 val = 1,
                 def = true,

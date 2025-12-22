@@ -45,6 +45,13 @@
         <text>Показывать уведомление, когда iTheon Autolooter заблокирован из-за того, что предметы ещё отображаются. Требует установленный iTheon Autolooter.</text>
     </string>
     
+    <string id="ui_mcm_loot_searching_presort_grid">
+        <text>Предварительная сортировка</text>
+    </string>
+    <string id="ui_mcm_loot_searching_presort_grid_desc">
+        <text>Сортировать предметы по размеру перед размещением на сетке (крупные первыми). Предотвращает наложение, но меняет позиции. Отключите для стандартного размещения.</text>
+    </string>
+    
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
         <text>Настройки отображения</text>

@@ -43,6 +43,12 @@
     <string id="ui_mcm_loot_searching_autolooter_show_blocked_msg_desc">
         <text>Show a notification when iTheon Autolooter is blocked because items are still being revealed. Requires iTheon Autolooter to be installed.</text>
     </string>
+    <string id="ui_mcm_loot_searching_presort_grid">
+        <text>Pre-sort Items on Grid</text>
+    </string>
+    <string id="ui_mcm_loot_searching_presort_grid_desc">
+        <text>Sort items by size before placing on the grid (larger items first). Prevents overlapping but changes item positions. Disable to use game's default item placement.</text>
+    </string>
     
     <!-- Reveal Mode Section -->
     <string id="ui_mcm_loot_searching_reveal_header">
