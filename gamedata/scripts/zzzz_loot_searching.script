@@ -1,20 +1,16 @@
 --[[
-    Looting Takes Time - Improved
+    Looting Takes Time Enhanced (Tarkov like looting)
     Original by: xcvb
-    Improvements by: Abraham
+    Re-written & improved by: Abraham (Priler)
+    Github repo: https://github.com/Priler/tarkov_looting
     
-    Features:
-    1. Items hidden until searched - no flash on open
-    2. Grid position preservation - items don't shuffle
-    3. Rank-based search time - higher rank = longer search
-    4. Two reveal modes: positional (L-R, T-B) or size-based
-    5. Dark silhouette placeholder mode
-    6. Animated "Searching..." indicator
+    Check out ModDB page for more details: https://www.moddb.com/mods/stalker-anomaly/addons/looting-takes-time-redux-tarkov-like-looting
 --]]
 
-------------------------------------------------------------------------
--- STATE TABLES
-------------------------------------------------------------------------
+
+
+-- ### STATE TABLES
+
 local corpses = {}              -- [npc_id][item_id] = nil/true/false
 local initial_inv = {}          -- [npc_id][item_id] = true
 local corpse_rank = {}          -- [npc_id] = rank_multiplier
@@ -41,9 +37,10 @@ local function get_aspect_correction()
     return cached_aspect_correction
 end
 
-------------------------------------------------------------------------
--- HARUKA'S SKILLS INTEGRATION
-------------------------------------------------------------------------
+
+
+-- ### HARUKA'S SKILLS INTEGRATION
+
 -- Returns time multiplier based on scavenging skill (1.0 = no bonus, 0.5 = max bonus)
 -- Automatically detects if Haruka's Skills mod is installed
 -- Also returns debug info: detected, current_level, max_level
@@ -104,9 +101,10 @@ end
 
 local sfind = string.find
 
-------------------------------------------------------------------------
--- SOUND TABLES
-------------------------------------------------------------------------
+
+
+-- ### SOUND TABLES
+
 local snd_t = {
     ["w_ammo"] = { "ammo_1", "ammo_2", "ammo_3", "ammo_4" },
     ["w_misc"] = { "parts_1", "parts_2", "parts_3" },
@@ -141,9 +139,10 @@ local replace_snd_by_kind = {
     ["outfit"] = { "o_heavy", "o_light", "o_medium", "o_sci" },
 }
 
-------------------------------------------------------------------------
--- MCM SETTINGS
-------------------------------------------------------------------------
+
+
+-- ### MCM SETTINGS
+
 local enable_corpses = true
 local enable_containers = false
 local block_mags_redux_sort = false  -- Completely block Magazines Redux sorting in NPC inventory
@@ -215,9 +214,9 @@ local rank_mult = {
     ["legend"] = 1.7,
 }
 
-------------------------------------------------------------------------
--- DEBUG (defined early so load_settings can use it)
-------------------------------------------------------------------------
+
+-- ### DEBUG (defined early so load_settings can use it)
+
 local function pr(fmt, ...)
     if not debugx then return end
     local args = {...}
@@ -312,9 +311,10 @@ local function load_settings()
     rank_mult["legend"] = get_num("rank_legend", 1.7)
 end
 
-------------------------------------------------------------------------
--- UTILITY
-------------------------------------------------------------------------
+
+
+-- ### UTILITY
+
 local function is_valid_target(npc)
     if not npc then return false end
     
@@ -361,9 +361,10 @@ function is_item_hidden(npc_id, item_id)
     return state == "hidden" or state == "silhouette"
 end
 
-------------------------------------------------------------------------
--- SOUND
-------------------------------------------------------------------------
+
+
+-- ### SOUND
+
 local function play_found_sound(item_id)
     if not sound_enable then return end
     
@@ -435,9 +436,10 @@ local function play_found_sound(item_id)
     end
 end
 
-------------------------------------------------------------------------
--- GRID POSITION CALCULATION
-------------------------------------------------------------------------
+
+
+-- ### GRID POSITION CALCULATION
+
 local sort_cache = { w = {}, h = {}, k = {} }
 local item_order = nil
 
@@ -639,9 +641,10 @@ local function calculate_positions(npc_id, npc)
     pr("Calculated %d positions", #items)
 end
 
-------------------------------------------------------------------------
--- LOADING SPINNER MANAGEMENT
-------------------------------------------------------------------------
+
+
+-- ### LOADING SPINNER MANAGEMENT
+
 local function get_spinner_xml()
     if not spinner_xml then
         spinner_xml = CScriptXmlInit()
@@ -736,9 +739,10 @@ local function cleanup_all_spinners()
     pr("Cleaned up all spinners")
 end
 
-------------------------------------------------------------------------
--- SEARCH TIME CALCULATION
-------------------------------------------------------------------------
+
+
+-- ### SEARCH TIME CALCULATION
+
 -- Get the appropriate looting text based on player faction
 local function get_looting_text()
     -- Check if we have a cached value for the current faction
@@ -800,9 +804,10 @@ local function calc_search_time(order_index, npc_id, total_items)
     return math.max(time, 0.3)
 end
 
-------------------------------------------------------------------------
--- CORPSE/CONTAINER INITIALIZATION
-------------------------------------------------------------------------
+
+
+-- ### CORPSE/CONTAINER INITIALIZATION
+
 -- Note: Primary initialization now happens in ParseInventory to prevent flash
 -- This function is kept as a backup and to set cur_npc_id
 function save_initial_inv()
@@ -821,9 +826,9 @@ function save_initial_inv()
     return true
 end
 
-------------------------------------------------------------------------
--- ITEM REVEAL (Two-stage for loading icon mode)
-------------------------------------------------------------------------
+
+
+-- ### ITEM REVEAL (Two-stage for loading icon mode)
 
 -- Stage 1: Hidden -> Silhouette (for loading icon mode)
 function reveal_silhouette(npc_id, item_id)
@@ -897,9 +902,10 @@ function reveal_item(npc_id, item_id)
     return true
 end
 
-------------------------------------------------------------------------
--- PLACEHOLDER VISUALS (Silhouettes and Loading Icons)
-------------------------------------------------------------------------
+
+
+-- ### PLACEHOLDER VISUALS (Silhouettes and Loading Icons)
+
 local function update_silhouette_color_cache()
     -- Calculate color based on intensity and base color
     -- At 100% intensity: color is close to base color (dark)
@@ -921,9 +927,10 @@ local function get_silhouette_color()
     return cached_sil_r, cached_sil_g, cached_sil_b
 end
 
-------------------------------------------------------------------------
--- PARSEINVENTORY OVERRIDE
-------------------------------------------------------------------------
+
+
+-- ### PARSEINVENTORY OVERRIDE
+
 local basePI = ui_inventory.UIInventory.ParseInventory
 
 function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
@@ -1363,9 +1370,10 @@ function ui_inventory.UIInventory:ParseInventory(npc, all, id_list, ignore_kind)
     return inv
 end
 
-------------------------------------------------------------------------
--- FINDFREECELL OVERRIDE
-------------------------------------------------------------------------
+
+
+-- ### FINDFREECELL OVERRIDE
+
 local baseFindFreeCell = utils_ui.UICellContainer.FindFreeCell
 
 function utils_ui.UICellContainer:FindFreeCell(obj, sec)
@@ -1404,9 +1412,9 @@ function utils_ui.UICellContainer:FindFreeCell(obj, sec)
     return self:TakeRoom(pos.row, pos.col, pos.w, pos.h)
 end
 
-------------------------------------------------------------------------
--- BLOCK INTERACTION WITH HIDDEN ITEMS
-------------------------------------------------------------------------
+
+
+-- ### BLOCK INTERACTION WITH HIDDEN ITEMS
 
 -- Block highlight on hover
 local base_UICellItem_Highlight = utils_ui.UICellItem.Highlight
@@ -1553,9 +1561,10 @@ function ui_inventory.UIInventory:On_CC_DragDrop(bag_from, idx_from)
     return base_On_CC_DragDrop(self, bag_from, idx_from)
 end
 
-------------------------------------------------------------------------
--- HUD INDICATOR
-------------------------------------------------------------------------
+
+
+-- ### HUD INDICATOR
+
 local current_hud_icon = nil
 local current_indicator_style = nil
 local current_indicator_x = nil
@@ -1696,9 +1705,10 @@ function ui_inventory.UIInventory:LootUpdateX()
     end
 end
 
-------------------------------------------------------------------------
--- CALLBACKS
-------------------------------------------------------------------------
+
+
+-- ### CALLBACKS
+
 function GUI_on_show(name)
     if name ~= "UIInventory" then return end
     CreateTimeEvent("init_inv_ev", "init_inv_ac", 0, save_initial_inv)
@@ -1748,12 +1758,10 @@ function on_option_change()
     update_silhouette_color_cache()
 end
 
-------------------------------------------------------------------------
--- INIT
-------------------------------------------------------------------------
-------------------------------------------------------------------------
--- MAGAZINES REDUX COMPATIBILITY
-------------------------------------------------------------------------
+
+
+-- ### MAGAZINES REDUX COMPATIBILITY
+
 -- Suppress Magazines Redux sorting during active looting to prevent position conflicts
 local function hook_magazines_redux()
     -- Always log this check regardless of debug mode
@@ -1797,9 +1805,10 @@ local function hook_magazines_redux()
     end
 end
 
-------------------------------------------------------------------------
--- SORTING PLUS COMPATIBILITY
-------------------------------------------------------------------------
+
+
+-- ### SORTING PLUS COMPATIBILITY
+
 -- Suppress Sorting Plus re-sorting during active looting to prevent position conflicts
 local function hook_sorting_plus()
     -- Always log this check regardless of debug mode
@@ -1835,9 +1844,10 @@ local function hook_sorting_plus()
     end
 end
 
-------------------------------------------------------------------------
--- ITHEON AUTOLOOTER COMPATIBILITY
-------------------------------------------------------------------------
+
+
+-- ### ITHEON AUTOLOOTER COMPATIBILITY
+
 -- Block autolooter during active looting to prevent it from accessing hidden items
 local function hook_autolooter()
     -- Always log this check regardless of debug mode

@@ -1,9 +1,3 @@
---[[
-    Looting Takes Time - MCM Configuration
-    Original by: xcvb
-    Improvements by: Abraham
---]]
-
 -- If you don't use MCM, change your defaults from here.
 local defaults = {
     -- Targets
